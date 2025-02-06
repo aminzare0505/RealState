@@ -1,0 +1,5 @@
+﻿//add first Migration Script: add-migration initialCreate
+//Apply Change to Database Script: update-database
+//add class change to Migration Script: add-migration WriteCustomMigrationName
+//Apply Change to Database Script: update-database
+//revert Changes to previous Migration  Script: update-database -migration Name Of Migration you want to revert

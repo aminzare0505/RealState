@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RealState.Data;
 using RealState.Models;
 
@@ -12,6 +13,7 @@ namespace RealState.Controllers
     {
         ApiDBContext _dbContext = new ApiDBContext();
         // GET: api/<CategoriesController>
+       [Authorize]
         [HttpGet]
         public IActionResult Get()
         {

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using RealState.Data;
 using RealState.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace RealState.Controllers
 {
@@ -8,30 +10,61 @@ namespace RealState.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private static List<Category> categories=new List<Category>() { 
-        new Category(){Id=1,Name="Name 1",ImageUrl="ImageUrl 1" },
-        new Category(){Id=2,Name="Name 2",ImageUrl="ImageUrl 2" }
-        };
+        ApiDBContext _dbContext = new ApiDBContext();
+        // GET: api/<CategoriesController>
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(_dbContext.Categories);
+        }
+        [HttpGet("[action]")]//with this attribute, you can call the method with names of method 
+        public IActionResult GetCategoriesWithSort()
+        {
+            return Ok(_dbContext.Categories.OrderByDescending(o=>o.Name));
+        }
 
-        [HttpGet("Get")]
-        public IEnumerable<Category> GET()
+        // GET api/<CategoriesController>/5
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
         {
-            return categories;
+            return Ok(_dbContext.Categories.FirstOrDefault(f=>f.Id==id));
         }
-        [HttpPost("Insert")]
-        public void Insert([FromBody]Category category)
+
+        // POST api/<CategoriesController>
+        [HttpPost]
+        public IActionResult Post([FromBody] Category value)
         {
-            categories.Add(category);
+            _dbContext.Categories.Add(value);
+            _dbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
+
+        // PUT api/<CategoriesController>/5
         [HttpPut("{id}")]
-        public void Put(int id,[FromBody] Category category)
+        public IActionResult Put(int id, [FromBody] Category categoryObj)
         {
-            categories[id]=category;
+            var category = _dbContext.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound("No Record Found");
+            }
+            else
+            {
+                category.Name = categoryObj.Name;
+                category.ImageUrl = categoryObj.ImageUrl;
+                _dbContext.SaveChanges();
+                return Ok("Record Updated Succesfully");
+            }
         }
+        // DELETE api/<CategoriesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            categories.RemoveAt(id              );
+            var category= _dbContext.Categories.Find(id);
+            _dbContext.Categories.Remove(category);
+            _dbContext.SaveChanges();
+            return Ok("Record Deleted");
+
         }
     }
 }

@@ -7,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+//if you want to get Api results as Xml, you have to register this service and
+//when you call the Api you must  send Accept value with application/xml in header
+builder.Services.AddMvc().AddXmlSerializerFormatters(); 
+                                                        
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
